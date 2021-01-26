@@ -1,12 +1,14 @@
 import tkinter as tk
 from tkinter import messagebox as tkmsgbox
+from tkinter import ttk as ttk
+from datetime import datetime as dtime
+import sqlite3 as sq3
 
 # Global variables
 tasks_list = []
-counter = 1
 color_bg = "white"
 color_fg = "black"
-projects = [("ural", "Project manager", "Python3")]
+projects = []
 
 def get_rows(data):
 	return len(data)
@@ -22,15 +24,23 @@ class Table:
 
 	def update_table(self, data):
 		self.data = data
+
+		if len(self.data) == 0:
+			return
+
 		self.rows = get_rows(data)
 		self.columns = get_columns(data)
 
-		self.e = tk.Label(self.root, text="Name", fg=color_fg, bg=color_bg)
+		self.e = tk.Label(self.root, text="ID", fg=color_fg, bg=color_bg)
 		self.e.grid(row=self.start_row, column=0)
-		self.e = tk.Label(self.root, text="Description", fg=color_fg, bg=color_bg)
+		self.e = tk.Label(self.root, text="Date", fg=color_fg, bg=color_bg)
 		self.e.grid(row=self.start_row, column=1)
-		self.e = tk.Label(self.root, text="Language", fg=color_fg, bg=color_bg)
+		self.e = tk.Label(self.root, text="Name", fg=color_fg, bg=color_bg)
 		self.e.grid(row=self.start_row, column=2)
+		self.e = tk.Label(self.root, text="Description", fg=color_fg, bg=color_bg)
+		self.e.grid(row=self.start_row, column=3)
+		self.e = tk.Label(self.root, text="Language", fg=color_fg, bg=color_bg)
+		self.e.grid(row=self.start_row, column=4)
 
 		for i in range(self.rows):
 			for j in range(self.columns):
@@ -53,6 +63,8 @@ class MainApplication(tk.Frame):
 		self.master.title("ural")
 		self.master.geometry("800x800")
 		self.master.minsize(width=800, height=800)
+		self.master.style = ttk.Style()
+		self.master.style.theme_use("clam")
 
 	def create_widgets(self):
 		labelPName = tk.Label(self.master, text="Project name:", fg=color_fg, bg=color_bg)
@@ -79,14 +91,39 @@ class MainApplication(tk.Frame):
 		self.table = Table(self.master, 4, projects)
 
 	def submit(self):
-		global counter
+		global projects
 
 		if self.entryPName.get() == "" or self.entryPDesc.get() == "" or self.entryPLang.get() == "":
 			tkmsgbox.showerror("Input error!")
 			return
 
-		data = [self.entryPName.get(), self.entryPDesc.get(), self.entryPLang.get()]
-		projects.append(data)
+		count = 0
+
+		if len(projects) != 0:
+			count = get_rows(projects)
+
+		data = [count,
+				dtime.now().strftime("%Y-%m-%d %H:%M:%S"),
+				self.entryPName.get(),
+				self.entryPDesc.get(),
+				self.entryPLang.get()
+		]
+
+		if len(projects) != 0:
+			projects.append(data)
+		else:
+			projects = [data]
+
+		# Also add data into DB
+		conn = sq3.connect('ural.db')
+		c = conn.cursor()
+		c.execute(
+			"INSERT INTO projects VALUES (?, ?, ?, ?, ?)",
+			(data[0], data[1], data[2], data[3], data[4])
+		)
+		conn.commit()
+		conn.close()
+
 		self.table.update_table(projects)
 		self.clear()
 
@@ -96,6 +133,21 @@ class MainApplication(tk.Frame):
 		self.entryPLang.delete(0, tk.END)
 
 if __name__ == '__main__':
+	# Open DB connection and create table if not exists
+	conn = sq3.connect('ural.db')
+	c = conn.cursor()
+	c.execute('''CREATE TABLE IF NOT EXISTS projects
+				 (id INTEGER, date TEXT, name TEXT, description TEXT, language TEXT)''')
+
+	# Reading database into global variable
+	data = c.execute('SELECT id, date, name, description, language FROM projects').fetchall()
+
+	for row in data:
+		projects.append(row)
+
+	conn.close()
+
+	# Start Tkinter and mainloop
 	root = tk.Tk()
 	main_app = MainApplication(root)
 	root.mainloop()

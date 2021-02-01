@@ -17,8 +17,7 @@ def get_columns(data):
 	return len(data[0])
 
 class Table:
-	def __init__(self, root, start_row, data):
-		self.start_row = start_row
+	def __init__(self, root, data):
 		self.root = root
 		self.update_table(data)
 
@@ -32,7 +31,7 @@ class Table:
 		self.columns = get_columns(data)
 
 		self.tree = ttk.Treeview(self.root, selectmode='browse')
-		self.tree.grid(row=self.start_row, column=0, sticky='we')
+		self.tree.grid(row=0, column=0, sticky='we')
 		self.tree["columns"] = ("1", "2", "3", "4", "5")
 		self.tree['show'] = 'headings'
 		self.tree.column("1", width=50, anchor='c')
@@ -51,11 +50,8 @@ class Table:
 			self.data[i][1],self.data[i][2],self.data[i][3],self.data[i][4]))
 
 		self.vsbar = ttk.Scrollbar(self.root, orient="vertical", command=self.tree.yview)
-		self.vsbar.grid(row=self.start_row, column=1, sticky='ns')
+		self.vsbar.grid(row=0, column=1, sticky='ns')
 		self.tree.configure(yscrollcommand=self.vsbar.set)
-
-	def get_final_row():
-		return start_row + get_rows(self.rows)
 
 class MainApplication(tk.Frame):
 	def __init__(self, master):
@@ -107,7 +103,7 @@ class MainApplication(tk.Frame):
 		buttonSubmit.grid(row=3, column=1)
 		buttonExit.grid(row=3, column=2)
 
-		self.table = Table(self.frame2, 0, projects)
+		self.table = Table(self.frame2, projects)
 
 	def submit(self):
 		global projects

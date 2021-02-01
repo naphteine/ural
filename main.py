@@ -31,22 +31,28 @@ class Table:
 		self.rows = get_rows(data)
 		self.columns = get_columns(data)
 
-		self.e = tk.Label(self.root, text="ID", fg=color_fg, bg=color_bg)
-		self.e.grid(row=self.start_row, column=0)
-		self.e = tk.Label(self.root, text="Date", fg=color_fg, bg=color_bg)
-		self.e.grid(row=self.start_row, column=1)
-		self.e = tk.Label(self.root, text="Name", fg=color_fg, bg=color_bg)
-		self.e.grid(row=self.start_row, column=2)
-		self.e = tk.Label(self.root, text="Description", fg=color_fg, bg=color_bg)
-		self.e.grid(row=self.start_row, column=3)
-		self.e = tk.Label(self.root, text="Language", fg=color_fg, bg=color_bg)
-		self.e.grid(row=self.start_row, column=4)
+		self.tree = ttk.Treeview(self.root, selectmode='browse')
+		self.tree.grid(row=self.start_row, column=0, sticky='we')
+		self.tree["columns"] = ("1", "2", "3", "4", "5")
+		self.tree['show'] = 'headings'
+		self.tree.column("1", width=50, anchor='c')
+		self.tree.column("2", width=150, anchor='w')
+		self.tree.column("3", width=100, anchor='w')
+		self.tree.column("4", width=300, anchor='w')
+		self.tree.column("5", width=100, anchor='w')
+		self.tree.heading("1", text="ID")
+		self.tree.heading("2", text="Date")
+		self.tree.heading("3", text="Name")
+		self.tree.heading("4", text="Description")
+		self.tree.heading("5", text="Language")
 
 		for i in range(self.rows):
-			for j in range(self.columns):
-				self.e = tk.Entry(self.root, width=20, fg=color_fg, bg=color_bg)
-				self.e.grid(row=1 + self.start_row + i, column=j)
-				self.e.insert(tk.END, self.data[i][j])
+			self.tree.insert("", 'end', text=i, values=(self.data[i][0],
+			self.data[i][1],self.data[i][2],self.data[i][3],self.data[i][4]))
+
+		self.vsbar = ttk.Scrollbar(self.root, orient="vertical", command=self.tree.yview)
+		self.vsbar.grid(row=self.start_row, column=1, sticky='ns')
+		self.tree.configure(yscrollcommand=self.vsbar.set)
 
 	def get_final_row():
 		return start_row + get_rows(self.rows)

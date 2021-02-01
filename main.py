@@ -59,20 +59,33 @@ class MainApplication(tk.Frame):
 		self.create_widgets()
 
 	def configure_gui(self):
+		self.grid()
 		self.master.configure(background="white")
 		self.master.title("ural")
-		self.master.geometry("800x800")
-		self.master.minsize(width=800, height=800)
+		self.master.geometry("1200x600")
+		self.master.minsize(width=1200, height=600)
+		self.master.resizable(width=0, height=0)
 		self.master.style = ttk.Style()
 		self.master.style.theme_use("clam")
 
+		for row in range(6):
+			self.master.rowconfigure(row, weight=1)
+
+		for column in range(5):
+			self.master.columnconfigure(column, weight=1)
+
+		self.frame1 = tk.Frame(self.master, bg="white")
+		self.frame1.grid(row = 0, column = 0, rowspan = 2, columnspan = 5, sticky = "wens")
+		self.frame2 = tk.Frame(self.master, bg="white")
+		self.frame2.grid(row = 2, column = 0, rowspan = 4, columnspan = 5, sticky = "wens")
+
 	def create_widgets(self):
-		labelPName = tk.Label(self.master, text="Project name:", fg=color_fg, bg=color_bg)
-		labelPDesc = tk.Label(self.master, text="Description:", fg=color_fg, bg=color_bg)
-		labelPLang = tk.Label(self.master, text="Language:", fg=color_fg, bg=color_bg)
-		self.entryPName = tk.Entry(self.master, bg=color_bg)
-		self.entryPDesc = tk.Entry(self.master, bg=color_bg)
-		self.entryPLang = tk.Entry(self.master, bg=color_bg)
+		labelPName = tk.Label(self.frame1, text="Project name:", fg=color_fg, bg=color_bg)
+		labelPDesc = tk.Label(self.frame1, text="Description:", fg=color_fg, bg=color_bg)
+		labelPLang = tk.Label(self.frame1, text="Language:", fg=color_fg, bg=color_bg)
+		self.entryPName = tk.Entry(self.frame1, bg=color_bg)
+		self.entryPDesc = tk.Entry(self.frame1, bg=color_bg)
+		self.entryPLang = tk.Entry(self.frame1, bg=color_bg)
 
 		labelPName.grid(row=0, column=0)
 		labelPDesc.grid(row=1, column=0)
@@ -81,14 +94,14 @@ class MainApplication(tk.Frame):
 		self.entryPDesc.grid(row=1, column=1)
 		self.entryPLang.grid(row=2, column=1)
 
-		buttonClear = tk.Button(self.master, text="Clear", fg=color_fg, bg=color_bg, command=self.clear)
-		buttonSubmit = tk.Button(self.master, text="Submit", fg=color_fg, bg=color_bg, command=self.submit)
-		buttonExit = tk.Button(self.master, text="Exit", fg=color_fg, bg=color_bg, command=exit)
+		buttonClear = tk.Button(self.frame1, text="Clear", fg=color_fg, bg=color_bg, command=self.clear)
+		buttonSubmit = tk.Button(self.frame1, text="Submit", fg=color_fg, bg=color_bg, command=self.submit)
+		buttonExit = tk.Button(self.frame1, text="Exit", fg=color_fg, bg=color_bg, command=exit)
 		buttonClear.grid(row=3, column=0)
 		buttonSubmit.grid(row=3, column=1)
 		buttonExit.grid(row=3, column=2)
 
-		self.table = Table(self.master, 4, projects)
+		self.table = Table(self.frame2, 0, projects)
 
 	def submit(self):
 		global projects

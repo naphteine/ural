@@ -16,12 +16,18 @@ def get_rows(data):
 def get_columns(data):
 	return len(data[0])
 
+def check_int(s):
+	if s[0] in ('-', '+'):
+		return s[1:].isdigit()
+	return s.isdigit()
+
 class Table:
 	def __init__(self, root, data):
 		self.root = root
 		self.update_table(data)
 
 	def update_table(self, data):
+		# Setup data
 		self.data = data
 
 		if len(self.data) == 0:
@@ -30,28 +36,52 @@ class Table:
 		self.rows = get_rows(data)
 		self.columns = get_columns(data)
 
+		# Setup Treeview
 		self.tree = ttk.Treeview(self.root, selectmode='browse')
 		self.tree.grid(row=0, column=0, sticky='we')
-		self.tree["columns"] = ("1", "2", "3", "4", "5")
 		self.tree['show'] = 'headings'
+
+		# Treeview: Columns setup
+		self.tree['columns'] = ["1", "2", "3", "4", "5"]
+
 		self.tree.column("1", width=50, anchor='c')
 		self.tree.column("2", width=150, anchor='w')
 		self.tree.column("3", width=100, anchor='w')
 		self.tree.column("4", width=300, anchor='w')
 		self.tree.column("5", width=100, anchor='w')
-		self.tree.heading("1", text="ID")
-		self.tree.heading("2", text="Date")
-		self.tree.heading("3", text="Name")
-		self.tree.heading("4", text="Description")
-		self.tree.heading("5", text="Language")
 
+		self.tree.heading("1", text="ID", command=lambda: \
+						  self.treeview_sort_column(self.tree, 1, "ID", False))
+		self.tree.heading("2", text="Date", command=lambda: \
+						  self.treeview_sort_column(self.tree, 2, "Date", False))
+		self.tree.heading("3", text="Name", command=lambda: \
+						  self.treeview_sort_column(self.tree, 3, "Name", False))
+		self.tree.heading("4", text="Description", command=lambda: \
+						  self.treeview_sort_column(self.tree, 4, "Description", False))
+		self.tree.heading("5", text="Language", command=lambda: \
+						  self.treeview_sort_column(self.tree, 5, "Language", False))
+
+		# Treeview: Insert data
 		for i in range(self.rows):
 			self.tree.insert("", 'end', text=i, values=(self.data[i][0],
 			self.data[i][1],self.data[i][2],self.data[i][3],self.data[i][4]))
 
+		# Vertical scrollbar
 		self.vsbar = ttk.Scrollbar(self.root, orient="vertical", command=self.tree.yview)
 		self.vsbar.grid(row=0, column=1, sticky='ns')
 		self.tree.configure(yscrollcommand=self.vsbar.set)
+
+	def treeview_sort_column(self, tv, col, text, reverse):
+		list = [(tv.set(k, col), k) for k in tv.get_children('')]
+		list.sort(reverse=reverse)
+
+		# rearrange items in sorted positions
+		for index, (val, k) in enumerate(list):
+			tv.move(k, '', index)
+
+		# reverse sort next time
+		tv.heading(col, text=text, command=lambda _col=col, _text=text: \
+				   self.treeview_sort_column(tv, _col, _text, not reverse))
 
 class MainApplication(tk.Frame):
 	def __init__(self, master):

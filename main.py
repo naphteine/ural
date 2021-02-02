@@ -94,8 +94,8 @@ class MainApplication(tk.Frame):
 		self.grid()
 		self.master.configure(background="white")
 		self.master.title("ural")
-		self.master.geometry("1200x600")
-		self.master.minsize(width=1200, height=600)
+		self.master.geometry("900x600")
+		self.master.minsize(width=900, height=600)
 		self.master.resizable(width=0, height=0)
 		self.master.style = ttk.Style()
 		self.master.style.theme_use("clam")
@@ -107,9 +107,9 @@ class MainApplication(tk.Frame):
 			self.master.columnconfigure(column, weight=1)
 
 		self.frame1 = tk.Frame(self.master, bg="white")
-		self.frame1.grid(row = 0, column = 0, rowspan = 2, columnspan = 5, sticky = "wens")
+		self.frame1.grid(row = 0, column = 0, rowspan = 2, columnspan = 5)
 		self.frame2 = tk.Frame(self.master, bg="white")
-		self.frame2.grid(row = 2, column = 0, rowspan = 4, columnspan = 5, sticky = "wens")
+		self.frame2.grid(row = 2, column = 0, rowspan = 4, columnspan = 5)
 
 	def create_widgets(self):
 		labelPName = tk.Label(self.frame1, text="Project name:", fg=color_fg, bg=color_bg)
@@ -132,6 +132,7 @@ class MainApplication(tk.Frame):
 		buttonClear.grid(row=3, column=0)
 		buttonSubmit.grid(row=3, column=1)
 		buttonExit.grid(row=3, column=2)
+		self.frame1.grid_rowconfigure(3, minsize=50)
 
 		self.table = Table(self.frame2, projects)
 

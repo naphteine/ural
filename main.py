@@ -103,13 +103,17 @@ class MainApplication(tk.Frame):
 		for row in range(6):
 			self.master.rowconfigure(row, weight=1)
 
-		for column in range(5):
+		for column in range(3):
 			self.master.columnconfigure(column, weight=1)
 
 		self.frame1 = tk.Frame(self.master, bg="white")
-		self.frame1.grid(row = 0, column = 0, rowspan = 2, columnspan = 5)
+		self.frame1.grid(row=0, column=0, rowspan=2, columnspan=3)
 		self.frame2 = tk.Frame(self.master, bg="white")
-		self.frame2.grid(row = 2, column = 0, rowspan = 4, columnspan = 5)
+		self.frame2.grid(row=2, column=0, rowspan=4, columnspan=3)
+
+		self.projectsButton = tk.Button(self.master, text="Projects", fg=color_fg, bg=color_bg, command=exit).grid(row=6, column=0, sticky="nsew")
+		self.plansButton = tk.Button(self.master, text="Plans", fg=color_fg, bg=color_bg, command=exit).grid(row=6, column=1, sticky="nsew")
+		self.issuesButton = tk.Button(self.master, text="Issues", fg=color_fg, bg=color_bg, command=exit).grid(row=6, column=2, sticky="nsew")
 
 	def create_widgets(self):
 		labelPName = tk.Label(self.frame1, text="Project name:", fg=color_fg, bg=color_bg)

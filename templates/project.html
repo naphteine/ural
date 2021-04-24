@@ -27,7 +27,6 @@
 
         <div class="container">
             <div class="row">
-                <div class="col-sm">ID</div>
                 <div class="col-sm">Issue</div>
                 <div class="col-sm">Date</div>
                 <div class="col-sm">Weight</div>
@@ -36,11 +35,10 @@
             {{ range .Issues }}
             <a href="/issue/{{ .ID }}">
             <div class="row">
-                <div class="col-sm">{{ .ID }}</div>
                 <div class="col-sm">{{ .Description }}</div>
                 <div class="col-sm">{{ .Date }}</div>
                 <div class="col-sm">{{ .Weight }}</div>
-                <div class="col-sm">{{ .Type }}</div>
+                <div class="col-sm">{{ .TypeString }}</div>
             </div>
             </a>
             {{ end }}

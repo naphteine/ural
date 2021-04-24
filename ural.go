@@ -37,6 +37,13 @@ type IssuesData struct {
 	FinishDate  string
 	Weight      int
 	Type        int
+	TypeString  string
+}
+
+// TypeData holds type table data
+type TypeData struct {
+	ID   int
+	Type string
 }
 
 var tmpl = make(map[string]*template.Template)
@@ -128,6 +135,26 @@ func main() {
 
 		row.Close()
 
+		// Get type data
+		var typeData []TypeData
+		row, err = db.Query("SELECT type_id, type FROM types")
+		if err != nil {
+			panic(err)
+		}
+		defer row.Close()
+
+		for row.Next() {
+			var id int
+			var typeString string
+
+			err = row.Scan(&id, &typeString)
+			if err != nil {
+				panic(err)
+			}
+
+			typeData = append(typeData, TypeData{ID: id, Type: typeString})
+		}
+
 		// Get issues data
 		row, err = db.Query("SELECT issue_id, description, date, finish_date, weight, type FROM issues WHERE project_id=?", pid)
 		if err != nil {
@@ -148,7 +175,7 @@ func main() {
 				panic(err)
 			}
 
-			projectPageData.Issues = append(projectPageData.Issues, IssuesData{ID: id, Description: description, Date: date, FinishDate: finishDate.String, Weight: int(weight.Int32), Type: int(typeOf.Int32)})
+			projectPageData.Issues = append(projectPageData.Issues, IssuesData{ID: id, Description: description, Date: date, FinishDate: finishDate.String, Weight: int(weight.Int32), Type: int(typeOf.Int32), TypeString: typeData[int(typeOf.Int32)].Type})
 		}
 
 		// Execute template with prepared data

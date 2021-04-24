@@ -1,0 +1,34 @@
+{{ template "head" "Ural \\ Index"}}
+<body>
+    {{ template "header" "Projects List" }}
+    <main>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm">Name</div>
+                <div class="col-sm">Idea</div>
+            </div>
+            {{ range . }}
+            <a href="/project/{{ .ID }}">
+            <div class="row">
+                <div class="col-sm">{{ .Name }}</div>
+                <div class="col-sm">{{ .Idea }}</div>
+            </div>
+            </a>
+            {{ end }}
+        </div>
+
+        <form class="main-form" action="/post/project" method="post">
+            <p class="main-form">
+                <label class="main-form" for="name">Name:</label>
+                <input class="main-form" type="text" id="name" name="name" maxlength="32"><br>
+            </p>
+            <p class="main-form">
+                <label class="main-form" for="idea">Idea:</label>
+                <input class="main-form" type="text" id="idea" name="idea" maxlength="128"><br>
+            </p>
+            <p class="main-form">
+                <input class="main-form" type="submit" value="Add project">
+            </p>
+        </form>
+    </main>
+{{ template "footer" }}

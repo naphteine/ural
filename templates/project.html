@@ -1,0 +1,69 @@
+{{ template "head" "Ural \\ Index"}}
+<body>
+    {{ template "header" "Project Page" }}
+    <main>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm">Name</div>
+                <div class="col-sm">Idea</div>
+                <div class="col-sm">Category</div>
+                <div class="col-sm">Language</div>
+                <div class="col-sm">Date</div>
+            </div>
+            {{ range .Projects }}
+            <a href="/project/{{ .ID }}">
+            <div class="row">
+                <div class="col-sm">{{ .Name }}</div>
+                <div class="col-sm">{{ .Idea }}</div>
+                <div class="col-sm">{{ .Category }}</div>
+                <div class="col-sm">{{ .Language }}</div>
+                <div class="col-sm">{{ .Date }}</div>
+            </div>
+            </a>
+            {{ end }}
+        </div>
+
+        <hr>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm">ID</div>
+                <div class="col-sm">Issue</div>
+                <div class="col-sm">Date</div>
+                <div class="col-sm">Weight</div>
+                <div class="col-sm">Type</div>
+            </div>
+            {{ range .Issues }}
+            <a href="/issue/{{ .ID }}">
+            <div class="row">
+                <div class="col-sm">{{ .ID }}</div>
+                <div class="col-sm">{{ .Description }}</div>
+                <div class="col-sm">{{ .Date }}</div>
+                <div class="col-sm">{{ .Weight }}</div>
+                <div class="col-sm">{{ .Type }}</div>
+            </div>
+            </a>
+            {{ end }}
+        </div>
+
+        <hr>
+
+        {{ range .Projects }}
+        <form class="main-form" action="/post/issue/{{ .ID }}" method="post">
+            <p class="main-form">
+                <label class="main-form" for="issue">New issue:</label>
+                <input class="main-form" type="text" id="issue" name="issue" maxlength="64"><br>
+            </p>
+            <select name="type">
+                <option value="1">Step</option>
+                <option value="2">Improvement</option>
+                <option value="3">UI/UX</option>
+                <option value="4">Bug</option>
+            </select>
+            <p class="main-form">
+                <input class="main-form" type="submit" value="Add issue">
+            </p>
+        </form>
+        {{ end }}
+    </main>
+{{ template "footer" }}

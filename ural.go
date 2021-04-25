@@ -106,6 +106,7 @@ func main() {
 		type ProjectPageData struct {
 			Projects []ProjectData
 			Issues   []IssuesData
+			Types    []TypeData
 		}
 
 		var projectPageData ProjectPageData
@@ -136,7 +137,6 @@ func main() {
 		row.Close()
 
 		// Get type data
-		var typeData []TypeData
 		row, err = db.Query("SELECT type_id, type FROM types")
 		if err != nil {
 			panic(err)
@@ -152,7 +152,7 @@ func main() {
 				panic(err)
 			}
 
-			typeData = append(typeData, TypeData{ID: id, Type: typeString})
+			projectPageData.Types = append(projectPageData.Types, TypeData{ID: id, Type: typeString})
 		}
 
 		// Get issues data
@@ -175,7 +175,7 @@ func main() {
 				panic(err)
 			}
 
-			projectPageData.Issues = append(projectPageData.Issues, IssuesData{ID: id, Description: description, Date: date, FinishDate: finishDate.String, Weight: int(weight.Int32), Type: int(typeOf.Int32), TypeString: typeData[int(typeOf.Int32)].Type})
+			projectPageData.Issues = append(projectPageData.Issues, IssuesData{ID: id, Description: description, Date: date, FinishDate: finishDate.String, Weight: int(weight.Int32), Type: int(typeOf.Int32), TypeString: projectPageData.Types[int(typeOf.Int32)-1].Type})
 		}
 
 		// Execute template with prepared data

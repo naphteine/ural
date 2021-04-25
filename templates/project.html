@@ -52,16 +52,15 @@
                 <label class="main-form" for="issue">New issue:</label>
                 <input class="main-form" type="text" id="issue" name="issue" maxlength="64"><br>
             </p>
+        {{ end }}
             <select name="type">
-                <option value="1">Step</option>
-                <option value="2">Improvement</option>
-                <option value="3">UI/UX</option>
-                <option value="4">Bug</option>
+                {{ range .Types }}
+                <option value="{{ .ID }}">{{ .Type }}</option>
+                {{ end }}
             </select>
             <p class="main-form">
                 <input class="main-form" type="submit" value="Add issue">
             </p>
         </form>
-        {{ end }}
     </main>
 {{ template "footer" }}

@@ -20,12 +20,14 @@ const (
 
 // ProjectData holds various columns of project table
 type ProjectData struct {
-	ID       int
-	Name     string
-	Idea     string
-	Category string
-	Language string
-	Date     string
+	ID          int
+	Name        string
+	Idea        string
+	Category    string
+	Language    string
+	Date        string
+	Priority    int
+	PriorityStr string
 }
 
 // IssuesData holds various columns of issues table
@@ -68,7 +70,7 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", func(response http.ResponseWriter, request *http.Request) {
-		row, err := db.Query("SELECT id, idea, name FROM projects")
+		row, err := db.Query("SELECT id, idea, name, priority FROM projects ORDER BY priority DESC, date ASC")
 		if err != nil {
 			panic(err)
 		}
@@ -80,13 +82,14 @@ func main() {
 			var id int
 			var name sql.NullString
 			var idea string
+			var priority int
 
-			err = row.Scan(&id, &idea, &name)
+			err = row.Scan(&id, &idea, &name, &priority)
 			if err != nil {
 				panic(err)
 			}
 
-			projects = append(projects, ProjectData{ID: id, Name: name.String, Idea: idea})
+			projects = append(projects, ProjectData{ID: id, Name: name.String, Idea: idea, Priority: priority})
 		}
 
 		// Execute template with prepared data

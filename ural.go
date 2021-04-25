@@ -48,6 +48,12 @@ type TypeData struct {
 	Type string
 }
 
+// PriorityData holds all priority data columns
+type PriorityData struct {
+	PriorityID  int
+	PriorityStr string
+}
+
 var tmpl = make(map[string]*template.Template)
 
 func getDate() string {
@@ -70,7 +76,29 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", func(response http.ResponseWriter, request *http.Request) {
-		row, err := db.Query("SELECT id, idea, name, priority FROM projects ORDER BY priority DESC, date ASC")
+		// Load priority types data
+		row, err := db.Query("SELECT priority_id, description FROM priorities")
+		if err != nil {
+			panic(err)
+		}
+		defer row.Close()
+
+		var priorities []PriorityData
+
+		for row.Next() {
+			var id int
+			var str string
+
+			err = row.Scan(&id, &str)
+			if err != nil {
+				panic(err)
+			}
+
+			priorities = append(priorities, PriorityData{PriorityID: id, PriorityStr: str})
+		}
+
+		// Load project data
+		row, err = db.Query("SELECT id, idea, name, priority FROM projects ORDER BY priority DESC, date ASC")
 		if err != nil {
 			panic(err)
 		}
@@ -89,7 +117,7 @@ func main() {
 				panic(err)
 			}
 
-			projects = append(projects, ProjectData{ID: id, Name: name.String, Idea: idea, Priority: priority})
+			projects = append(projects, ProjectData{ID: id, Name: name.String, Idea: idea, Priority: priority, PriorityStr: priorities[priority-1].PriorityStr})
 		}
 
 		// Execute template with prepared data

@@ -335,7 +335,7 @@ func main() {
 	r.PathPrefix("/res/").Handler(http.StripPrefix("/res/", http.FileServer(http.Dir("static"))))
 
 	// Server
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServe(":8600", r)
 
 	// Shutting down
 	db.Close()

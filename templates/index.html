@@ -2,22 +2,26 @@
 <body>
     {{ template "header" "Projects List" }}
     <main>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-2">Name</div>
-                <div class="col-sm-8">Idea</div>
-                <div class="col-sm-1">Priority</div>
-            </div>
-            {{ range . }}
-            <a href="/project/{{ .ID }}">
-            <div class="row">
-                <div class="col-sm-2">{{ .Name }}</div>
-                <div class="col-sm-8">{{ .Idea }}</div>
-                <div class="col-sm-1">{{ .Priority }}</div>
-            </div>
-            </a>
-            {{ end }}
-        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Idea</th>
+                    <th scope="col">Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range . }}
+                <tr>
+                    <th scope="row">{{ .ID }}</th>
+                    <td><a href="/project/{{ .ID }}">{{ .Name }}</a></td>
+                    <td><a href="/project/{{ .ID }}">{{ .Idea }}</a></td>
+                    <td>{{ .Priority }}</td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
 
         <form class="main-form" action="/post/project" method="post">
             <p class="main-form">

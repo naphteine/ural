@@ -2,50 +2,54 @@
 <body>
     {{ template "header" "Project Page" }}
     <main>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm">Name</div>
-                <div class="col-sm">Idea</div>
-                <div class="col-sm">Category</div>
-                <div class="col-sm">Language</div>
-                <div class="col-sm">Date</div>
-            </div>
-            {{ range .Projects }}
-            <a href="/project/{{ .ID }}">
-            <div class="row">
-                <div class="col-sm">{{ .Name }}</div>
-                <div class="col-sm">{{ .Idea }}</div>
-                <div class="col-sm">{{ .Category }}</div>
-                <div class="col-sm">{{ .Language }}</div>
-                <div class="col-sm">{{ .Date }}</div>
-            </div>
-            </a>
-            {{ end }}
-        </div>
-
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Idea</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Language</th>
+                    <th scope="col">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .Projects }}
+                <tr>
+                    <th scope="row">{{ .ID }}</th>
+                    <td>{{ .Name }}</td>
+                    <td>{{ .Idea }}</td>
+                    <td>{{ .Category }}</td>
+                    <td>{{ .Language }}</td>
+                    <td>{{ .Date }}</td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
         <hr>
-
-        <div class="container">
-            <div class="row">
-                <div class="col-sm">Issue</div>
-                <div class="col-sm">Date</div>
-                <div class="col-sm">Weight</div>
-                <div class="col-sm">Type</div>
-            </div>
-            {{ range .Issues }}
-            <a href="/issue/{{ .ID }}">
-            <div class="row">
-                <div class="col-sm">{{ .Description }}</div>
-                <div class="col-sm">{{ .Date }}</div>
-                <div class="col-sm">{{ .Weight }}</div>
-                <div class="col-sm">{{ .TypeString }}</div>
-            </div>
-            </a>
-            {{ end }}
-        </div>
-
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Issue</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Weight</th>
+                    <th scope="col">Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .Issues }}
+                <tr>
+                    <th scope="row">{{ .ID }}</th>
+                    <td>{{ .Description }}</td>
+                    <td>{{ .Date }}</td>
+                    <td>{{ .Weight }}</td>
+                    <td>{{ .TypeString }}</td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
         <hr>
-
         {{ range .Projects }}
         <form class="main-form" action="/post/issue/{{ .ID }}" method="post">
             <p class="main-form">
